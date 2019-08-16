@@ -36,7 +36,7 @@ const Blog = ({blog, blogs}) => {
     )
 }
 */
-const Blog = ({blog, blogs}) => {
+const Blog = ({blog}) => {
   
   const [extraInfo, setExtraInfo] = useState(true)
   const showExtraVisible = {display : extraInfo ? 'none' : ''}
@@ -50,10 +50,11 @@ const Blog = ({blog, blogs}) => {
   }
   //console.log(blog)
   //const newBlog = new Promise(function(resolve,reject) {resolve(blogs.filter(myBlog => myBlog.id === blog.id)[0])})
-  const newBlog = blogs.filter(myBlog => myBlog.id === blog.id)[0]
+  //const newBlog = blogs.filter(myBlog => myBlog.id === blog.id)[0]
   //console.log(newBlog)
   //const newBlogUser = newBlog.user
-  const newBlogUser = new Promise(function(resolve,reject) {resolve(newBlog.user)})
+  
+  const newBlogUser = new Promise(function(resolve,reject) {resolve(blog.user)})
   //console.log(newBlog)
   
     return (
@@ -61,13 +62,13 @@ const Blog = ({blog, blogs}) => {
         <div onClick ={() => setExtraInfo(!extraInfo)}>
           <li key= {blog.id}>{blog.title + " " + blog.author + " " + blog.id}</li>
           <div style = {showExtraVisible}>
-            {newBlog.url}
+            {blog.url}
             <br></br>
-            {`${newBlog.likes} likes`}
+            {`${blog.likes} likes`}
             <br></br>
             {`added by ${newBlogUser.username} `}
             <br></br>
-            {JSON.stringify(newBlog)}
+            {JSON.stringify(blog)}
           </div>
         </div>
       </div>

@@ -12,7 +12,6 @@ function App() {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState('')
-  //const [blogs, setBlogs] = useState([])
   const [users, setUsers] = useState([])
   const [blogs, setBlogs] = useState([])
   //const [resultBlog, setResultBlog] = useState([])
@@ -24,6 +23,10 @@ function App() {
   const [newUrl, setUrl] = useState('')
   const [loginVisible, setLoginVisible] = useState(false)
   const [blogVisible, setBlogVisible] = useState(false)
+  const updateBlogList = async () => {
+    const blogs = await blogService.getAll()
+    setBlogs(blogs.sort((a, b) => b.likes - a.likes))
+  }
   useEffect(() => {
     userService
     .getAllUsers()
@@ -39,11 +42,9 @@ function App() {
       blogService.setToken(user.token)    
     }  
   }, [])
-  useEffect( () => {
-    blogService
-    .getAll()
-    .then(blogs => setBlogs(blogs))
-  })
+  useEffect(() => {
+    updateBlogList()
+  }, [])
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
@@ -101,10 +102,18 @@ function App() {
     //console.log(JSON.stringify(users))
     
     const filterBlogs = () => users.filter(myUser => myUser.name === user.name).map( resultUser => resultUser.blogs.map(blog => {
-      
+      //const newBlog = blogs.filter(myBlog => myBlog.id === blog.id)
+      const newBlog = blogs.reduce(function(accumulator, currentValue) {
+        if (currentValue.id === blog.id) {
+          return currentValue
+        }
+        else {
+          return accumulator
+        }
+      })
       return (
         <div>
-          <Blog blogs = {blogs} blog = {blog} />
+          <Blog blog = {newBlog} />
         </div>
       )
     }))
