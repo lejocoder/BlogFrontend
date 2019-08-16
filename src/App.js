@@ -5,7 +5,6 @@ import userService from './services/users'
 import SuccessNotification from './components/Notification'
 import ErrorNotification from './components/error'
 import LoginForm from './components/loginform'
-import ResultForm from './components/resultform'
 import Blog from './components/Blog'
 //import logo from './logo.svg';
 //import './App.css';
@@ -43,7 +42,7 @@ function App() {
   useEffect( () => {
     blogService
     .getAll()
-    .then(blogs => setUsers(blogs))
+    .then(blogs => setBlogs(blogs))
   })
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -98,15 +97,20 @@ function App() {
   const resultForm = () => {
     const hideWhenVisible = {display: blogVisible ? 'none' : ''}
     const showWhenVisible = {display: blogVisible ? '' : 'none'}
-    const filterBlogs = () => {users.filter(myUser => myUser.name === user.name).map(resultUser => resultUser.blogs.map(blog => {
-      console.log('hi')
+    //console.log(user.name)
+    //console.log(JSON.stringify(users))
+    
+    const filterBlogs = () => users.filter(myUser => myUser.name === user.name).map( resultUser => resultUser.blogs.map(blog => {
+      
       return (
         <div>
           <Blog blogs = {blogs} blog = {blog} />
         </div>
       )
-    }))}
-    //onst hideExtraINfoVisible = {display: }
+    }))
+    
+    
+    //console.log('a')
     return (
       <div>
         <SuccessNotification message= {successMessage} />
@@ -142,7 +146,9 @@ function App() {
         <div>
           {filterBlogs()}
         </div>
-
+        
+        
+        
       </div>
     )
   }
