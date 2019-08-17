@@ -36,10 +36,13 @@ const Blog = ({blog, blogs}) => {
     )
 }
 */
-const Blog = ({blog}) => {
+const Blog = ({blog, username, likeHandler, deleteHandler}) => {
   
   const [extraInfo, setExtraInfo] = useState(true)
+  //const [extraButton, setExtraButton] = useState(true)
+  //const [blogsUserCanDelete, setBlogsCanDelete] = useState([])
   const showExtraVisible = {display : extraInfo ? 'none' : ''}
+  
   //const hideExtraVisible = {display : extraInfo ? '' : 'none'}
   const blogStyle = {
     paddingTop: 10,
@@ -53,8 +56,12 @@ const Blog = ({blog}) => {
   //const newBlog = blogs.filter(myBlog => myBlog.id === blog.id)[0]
   //console.log(newBlog)
   //const newBlogUser = newBlog.user
-  
-  const newBlogUser = new Promise(function(resolve,reject) {resolve(blog.user)})
+  //console.log(blog.user)
+  //console.log(blogsUserCanDel)
+  const newBlogUser = blog.user
+  //console.log(username)
+  //console.log(username)
+  const showExtraButton = {display : newBlogUser.username === username ? '' : 'none' } // if true show, if not show nothing
   //console.log(newBlog)
   
     return (
@@ -64,11 +71,16 @@ const Blog = ({blog}) => {
           <div style = {showExtraVisible}>
             {blog.url}
             <br></br>
-            {`${blog.likes} likes`}
+            {`${blog.likes} likes`} <button value = {blog.id} onClick = {likeHandler}>like</button>
             <br></br>
             {`added by ${newBlogUser.username} `}
             <br></br>
-            {JSON.stringify(blog)}
+            <div style = {showExtraButton}>
+              <button value = {blog.id} onClick = {deleteHandler}>remove</button>
+            </div>
+          
+            
+            
           </div>
         </div>
       </div>
@@ -79,4 +91,8 @@ const Blog = ({blog}) => {
     
 }
 
+
 export default Blog
+
+//. for button we can use value ={value we want to pass}
+// in order to use the value elsewhere we use event.target.value in order to all on it
