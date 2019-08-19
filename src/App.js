@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react'
 import loginService from './services/login'
 import blogService from './services/blogs'
 import userService from './services/users'
@@ -7,11 +7,14 @@ import ErrorNotification from './components/error'
 import LoginForm from './components/loginform'
 import ResultForm from './components/resultform'
 import Blog from './components/Blog'
+import useField from './hooks/index'
 //import logo from './logo.svg';
 //import './App.css';
 function App() {
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
+  //const [username, setUsername] = useState('')
+  //const [password, setPassword] = useState('')
+  const usernameHook = useField('text')
+  const passwordHook = useField('text')
   const [user, setUser] = useState('')
   const [users, setUsers] = useState([])
   const [blogs, setBlogs] = useState([])
@@ -51,8 +54,10 @@ function App() {
   const handleLogin = async (event) => {
     event.preventDefault()
     try {
+      const username = usernameHook.value
+      const password = passwordHook.value // used cause for some reason it acting bitchy
       const user = await loginService.login({
-        username, password,
+        username, password
       })
       window.localStorage.setItem(        
         'loggedBlogappUser', JSON.stringify(user)      
@@ -60,8 +65,10 @@ function App() {
       //console.log(user)
       blogService.setToken(user.token) // this is to save the token in case we decide to submit more blogs
       setUser(user)
-      setUsername('')
-      setPassword('')
+      //setUsername('')
+      //setPassword('')
+      usernameHook.reset()
+      passwordHook.reset()
       
     }
     catch (exception) {
@@ -69,8 +76,10 @@ function App() {
       console.log('wrong credentials')
       setErrorMessage('wrong username or password')
       setUser('')
-      setUsername('')
-      setPassword('')
+      //setUsername('')
+      //setPassword('')
+      usernameHook.reset()
+      passwordHook.reset()
       
     }
   }
@@ -107,7 +116,7 @@ function App() {
     if(event.stopPropagation) event.stopPropagation()
     const blogToUpdate = blogs.reduce(function(accumulator, currentValue) {
       if (currentValue.id === idToCheck)
-      {" 
+      { 
         accumulator = currentValue
         return accumulator
       }
@@ -136,7 +145,7 @@ function App() {
   const handleDelete = (event) => {
     event.preventDefault()
     event.cancelBubble = true // alias to Event.stopPropogation
-    if(event.stopPropagation) event.stopPropagation();
+    if(event.stopPropagation) event.stopPropagation()
     //console.log(event.target.value)
     //console.log(event.target.value)
     const resultBlog = blogs.reduce((accumulator, currentValue) => {
@@ -176,7 +185,7 @@ function App() {
       <div>
         <SuccessNotification message= {successMessage} />
         <h1>blogs</h1>
-        <p>{user.name} logged in</p><button onClick= {() => onClickLogout}>logout</button>
+        <p>{user.name} logged in</p><button onClick= {onClickLogout}>logout</button>
         <br></br>
         <div style = {hideWhenVisible}>
           <button onClick = {() => setBlogVisible(!blogVisible)}>create</button>
@@ -221,10 +230,10 @@ function App() {
         <div style = {showWhenVisible}>
           <LoginForm 
             handleSubmit = {handleLogin} 
-            handleUsernameChange = {({ target }) => setUsername(target.value)}
-            handlePasswordChange = {({ target }) => setPassword(target.value)}
-            username = {username}
-            password = {password}
+            handleUsernameChange = {usernameHook.onChange}
+            handlePasswordChange = {passwordHook.onChange}
+            username = {usernameHook.value}
+            password = {passwordHook.value}
           />
           <button onClick= {() => setLoginVisible(!loginVisible)}>cancel login</button>
         </div>

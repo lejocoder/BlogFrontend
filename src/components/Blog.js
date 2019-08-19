@@ -23,9 +23,9 @@ const Blog = ({ blog, username, likeHandler, deleteHandler }) => {
   
   return (
     <div style= {blogStyle}>
-      <div onClick ={() => setExtraInfo(!extraInfo)}>
-        <li key= {blog.id}>{blog.title + ' ' + blog.author + ' ' + blog.id}</li>
-        <div style = {showExtraVisible}>
+      <div onClick ={() => setExtraInfo(!extraInfo)} className = 'divClicker'>
+        <li key= {blog.id}>{blog.title + ' ' + blog.author}</li>
+        <div style = {showExtraVisible} className= 'extrainfo'>
           {blog.url}
           <br></br>
           {`${blog.likes} likes`} <button value = {blog.id} onClick = {likeHandler}>like</button>
