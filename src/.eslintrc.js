@@ -1,3 +1,4 @@
+/*
 module.exports = {
   "env": {
       "browser": true,
@@ -43,3 +44,4 @@ module.exports = {
         "react/prop-types": 0  
     }
 };
+*/
