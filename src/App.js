@@ -8,17 +8,24 @@ import LoginForm from './components/loginform'
 import ResultForm from './components/resultform'
 import Blog from './components/Blog'
 import useField from './hooks/index'
+import { connect } from 'react-redux'
+import { createSuccessAddNotification, createVoteNotification, createDeleteNotification } from './reducers/notificationReducer' 
+import { makeNewBlog , initializeBlogs } from './reducers/blogReducer'
 //import logo from './logo.svg';
 //import './App.css';
-function App() {
+function App(props) {
   //const [username, setUsername] = useState('')
   //const [password, setPassword] = useState('')
   const usernameHook = useField('text')
   const passwordHook = useField('text')
   const [user, setUser] = useState('')
   const [users, setUsers] = useState([])
-  const [blogs, setBlogs] = useState([])
-  const [successMessage, setSuccessMessage] = useState('')
+  //const [blogs, setBlogs] = useState([])
+  //initializeBlogs()
+  const blogs = props.blogs
+  //console.log(props)
+  //const [successMessage, setSuccessMessage] = useState('')
+  const myNotification = props.notification
   const [errorMessage, setErrorMessage] = useState('')
   // this is for whne the user logs after 
   const [newTitle, setTitle] = useState('')
@@ -26,10 +33,13 @@ function App() {
   const [newUrl, setUrl] = useState('')
   const [loginVisible, setLoginVisible] = useState(false)
   const [blogVisible, setBlogVisible] = useState(false)
+  //console.log(props.notification)
+  /*
   const updateBlogList = async () => {
     const blogs = await blogService.getAll()
     setBlogs(blogs.sort((a, b) => b.likes - a.likes))
   }
+  */
   useEffect(() => {
     userService
       .getAllUsers()
@@ -45,11 +55,23 @@ function App() {
       blogService.setToken(user.token)    
     }  
   }, [])
-  
+  /*
   useEffect(() => {
     updateBlogList()
   }, [])
+  */
+  useEffect(() => {
+    props.initializeBlogs()
+  } )
   
+
+  const notificationToShow = () => {
+    //console.log(myNotification)
+      if (myNotification !== 'NO_NOTIFICATION') {
+        //console.log('true')
+          return <SuccessNotification />
+      }
+  }
   //updateBlogList()
   const handleLogin = async (event) => {
     event.preventDefault()
@@ -101,11 +123,13 @@ function App() {
     blogService
       .makeABlog(newBlog)
       .then(response => {
-        setSuccessMessage(`a new blog ${newTitle} by ${newAuthor} added`)
+        //setSuccessMessage(`a new blog ${newTitle} by ${newAuthor} added`)
+        props.createSuccessAddNotification(newTitle, newAuthor, 5)
         setAuthor('')
         setTitle('')
         setUrl('')
-        updateBlogList()
+        //updateBlogList()
+        props.initializeBlogs()
       })
   }
   
@@ -138,8 +162,10 @@ function App() {
     blogService
       .addALike(idToCheck, newBlog)
       .then(response => {
-        setSuccessMessage(`a blog ${blogToUpdate.title} has recieved a like`)
-        updateBlogList()
+        //setSuccessMessage(`a blog ${blogToUpdate.title} has recieved a like`)
+        props.createVoteNotification(blogToUpdate.title, 5)
+        //updateBlogList()
+        initializeBlogs()
       })
   }
   const handleDelete = (event) => {
@@ -162,8 +188,10 @@ function App() {
       blogService
         .deleteABlog(event.target.value)
         .then(response => {
-          setSuccessMessage(`the blog ${resultBlog.title} by ${resultBlog.author} has been deleted  `)
-          updateBlogList()
+          //setSuccessMessage(`the blog ${resultBlog.title} by ${resultBlog.author} has been deleted  `)
+          props.createDeleteNotification(resultBlog.title, resultBlog.author, 5)
+          //updateBlogList()
+          initializeBlogs()
         })
     }
   }
@@ -183,7 +211,7 @@ function App() {
     })
     return (
       <div>
-        <SuccessNotification message= {successMessage} />
+        {notificationToShow()}
         <h1>blogs</h1>
         <p>{user.name} logged in</p><button onClick= {onClickLogout}>logout</button>
         <br></br>
@@ -259,4 +287,21 @@ function App() {
   
 }
 
-export default App
+const mapStateToProps = (state) => {
+  return {
+    notification: state.notification,
+    blogs: state.blogs
+  }
+}
+
+const mapDispatchToProps = {
+  createDeleteNotification,
+  createSuccessAddNotification,
+  createVoteNotification,
+  initializeBlogs,
+  makeNewBlog
+}
+const connectedApp = connect(mapStateToProps, mapDispatchToProps)(App)
+export default connectedApp
+
+// <SuccessNotification message= {successMessage} />

@@ -15,15 +15,16 @@ const successNotification = ({message}) => {
 */
 const successNotification = (props) => {
     return (
-        <div>
-        {props.notification}
+        <div className = "successfulBlogAdd">
+            {props.notification}
         </div>
     )
       
 }
 const mapStateToProps = (state) => {
     return {
-        notification: state.notification
+        notification: state.notification,
+        type: state.type
     }
 }
 const connectedNotification = connect(mapStateToProps)(successNotification)
