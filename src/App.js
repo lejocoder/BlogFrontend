@@ -271,7 +271,7 @@ function App(props) {
   if (blogs === []) {
     return (
       <div>
-        this big gay
+        these blogs are empty
       </div>
     )
   }
